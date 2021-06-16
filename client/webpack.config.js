@@ -18,6 +18,10 @@ module.exports = {
     // webpack utilizara URLs relativas como /mi-ruta/main.js causando errores.
     publicPath: "/",
   },
+  resolve: {
+    modules: [resolve(__dirname, './src'), 'node_modules'],
+    extensions: ['.js', '.jsx', '.json']
+  },
   module: {
     // Definimos los distintos modulos de transpilacion disponibles
     rules: [
