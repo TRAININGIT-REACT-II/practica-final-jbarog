@@ -2,11 +2,11 @@ import actionTypes from 'actions/types';
 
 import {updateArrayIndex} from "utils/array.helpers";
 
-const initialState = {
+export const initialState = {
   list: [1,2,3]
 }
 
-const reducer = (state = initialState, action) => {
+const reducer = (state, action) => {
   switch(action.type) {
     case actionTypes.CREATE_NOTE:
       return {

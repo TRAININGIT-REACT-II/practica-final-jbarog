@@ -1,6 +1,5 @@
 import { Route, NavLink } from "react-router-dom";
 import { useRouteMatch } from "react-router";
-import { useSelector, useDispatch } from "react-redux";
 
 import { Typography, Button, CardMedia, Container, CardContent, CardActions, Card, Grid, makeStyles } from '@material-ui/core';
 
@@ -40,11 +39,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ListNotes = ({ status }) => {
-  const notes = useSelector((state) => getNotes(state));
+const ListNotes = ({ state, dispatch }) => {
+  const notes = getNotes(state);
   const classes = useStyles();
   const match = useRouteMatch();
-  const dispatch = useDispatch();
 
   const addNote = ()=>{
     dispatch(createNote('1'));
