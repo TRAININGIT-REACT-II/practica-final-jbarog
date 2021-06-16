@@ -3,7 +3,10 @@ import actionTypes from 'actions/types';
 import {updateArrayIndex} from "utils/array.helpers";
 
 const initialState = {
-  list: [1,2,3]
+  list: [
+    {id:1},
+    {id:2}
+  ]
 }
 
 const reducer = (state = initialState, action) => {
