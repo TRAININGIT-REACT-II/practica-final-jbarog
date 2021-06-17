@@ -1,14 +1,8 @@
-import TopMenu from "components/ui/TopMenu";
-
 import { makeStyles, Typography, Container } from '@material-ui/core';
 
-const Copyright = ()=>(
-  <Typography variant="body2" color="textSecondary">
-    {'Copyright © '}
-    {new Date().getFullYear()}
-    {'.'}
-  </Typography>
-);
+import Alert from "components/ui/Alert";
+import Footer from "components/ui/Footer";
+import TopMenu from "components/ui/TopMenu";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -19,15 +13,9 @@ const useStyles = makeStyles((theme) => ({
   main: {
     height: 'calc( 100vh - 64px - 92px)',
   },
-  footer: {
-    padding: theme.spacing(3, 2),
-    marginTop: 'auto',
-    backgroundColor:
-      theme.palette.type === 'light' ? theme.palette.grey[200] : theme.palette.grey[800],
-  },
 }));
 
-const DefaultLayout = ({ title, children }) => {
+const DefaultLayout = ({ title, children, alertContent, alertOnClose }) => {
   const classes = useStyles();
   return (
     <div className="layout" className={classes.root}>
@@ -35,12 +23,8 @@ const DefaultLayout = ({ title, children }) => {
       <main className={classes.main}>
         {children}
       </main>
-      <footer className={classes.footer}>
-        <Container maxWidth="sm">
-          <Typography variant="body1">LOREN IPSUM</Typography>
-          <Copyright />
-        </Container>
-      </footer>
+      <Footer/>
+      <Alert content={alertContent} onClose={alertOnClose}/>
     </div>
   )
 }

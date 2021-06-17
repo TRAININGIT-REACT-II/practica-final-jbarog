@@ -1,0 +1,114 @@
+import { useEffect, useState, useContext } from "react";
+
+import { Box, Checkbox, FormControlLabel, TextField, Button, CircularProgress, makeStyles } from '@material-ui/core';
+
+import { DEFAULT_AUTH_FORM_STATE, PASSWORD_MODES, AUTH_FORM_CONF } from "constants/authForm";
+import Auth from "contexts/auth";
+import {checkStringLength} from "utils/string.helpers";
+
+const useStyles = makeStyles((theme) => ({
+  form: {
+    width: '100%', // Fix IE 11 issue.
+    marginTop: theme.spacing(1),
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
+  },
+  loading: {
+    'margin-left': 5,
+  },
+}));
+
+const AuthForm = ({ onSubmit, isLoading }) => {
+  const classes = useStyles();
+  const [passwordMode, setPasswordMode] = useState(PASSWORD_MODES.password);
+  const [formState, setFormState] = useState(DEFAULT_AUTH_FORM_STATE);
+  const [formErrors, setFormErrors] = useState(null);
+
+  const togglePasswordMode = () => {
+    const nextMode = passwordMode === PASSWORD_MODES.text?PASSWORD_MODES.password:PASSWORD_MODES.text;
+    setPasswordMode(nextMode)
+  };
+
+  const checkFormErrors = form => {
+    const checkFieldError = field=>!checkStringLength(
+      form[field],
+      AUTH_FORM_CONF[field].min,
+      AUTH_FORM_CONF[field].max
+    );
+    const nameError = checkFieldError('name');
+    const passwordError = checkFieldError('password');
+    return nameError || passwordError?{
+      nameError,
+      passwordError,
+    }:null
+  }
+
+  const updateForm = field=>{
+    return (event)=>{
+      setFormState({
+        ...formState,
+        [field]: event.target.value
+      });
+    }
+  };
+
+  const sendForm = (event)=>{
+    event.preventDefault();
+    onSubmit(formState);
+  };
+
+  useEffect(() => {
+    setFormErrors(checkFormErrors(formState));
+  }, [formState]);
+
+  return (
+    <form className={classes.form}>
+      <TextField
+      variant="outlined"
+      margin="normal"
+      required
+      fullWidth
+      id="name"
+      label="name"
+      name="email"
+      autoComplete="name"
+      value={formState.name}
+      onChange={updateForm('name')}
+      autoFocus
+      />
+      {(formErrors && formErrors.nameError)?<Box>Name not valid</Box>:<></>}
+      <TextField
+      variant="outlined"
+      margin="normal"
+      required
+      fullWidth
+      name="password"
+      label="Password"
+      type={passwordMode}
+      id="password"
+      autoComplete="current-password"
+      value={formState.password}
+      onChange={updateForm('password')}
+      />
+      {(formErrors && formErrors.passwordError)?<Box>Password not valid</Box>:<></>}
+      <FormControlLabel
+      control={<Checkbox value="remember" color="primary"  onChange={togglePasswordMode}/>}
+      label="Show password"
+      />
+      <Button
+      type="submit"
+      fullWidth
+      variant="contained"
+      color="primary"
+      disabled={Boolean(formErrors) || isLoading}
+      className={classes.submit}
+      onClick={sendForm}
+      >
+        Send {isLoading && <CircularProgress className={classes.loading} size={20}/>}
+      </Button>
+    </form>
+  );
+};
+
+export default AuthForm;

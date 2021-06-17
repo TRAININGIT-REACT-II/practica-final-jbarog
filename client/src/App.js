@@ -6,6 +6,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 
 import Auth from "contexts/auth";
 import Status from "components/Status";
+import Join from "components/Pages/Auth/Join";
 import Login from "components/Pages/Auth/Login";
 import ListNotes from "components/Pages/Notes/ListNotes";
 import PrivateRoute from "components/routers/PrivateRoute";
@@ -41,6 +42,9 @@ const App = () => {
                 {loading ? " Cargando..." : <Status status={status} />}
                 </p>
                 </main>
+              </Route>
+              <Route path="/join">
+                <Join/>
               </Route>
               <Route path="/login">
                 <Login/>
