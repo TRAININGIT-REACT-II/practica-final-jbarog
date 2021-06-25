@@ -11,7 +11,7 @@ import Login from "components/Pages/Auth/Login";
 import ListNotes from "components/Pages/Notes/ListNotes";
 import PrivateRoute from "components/routers/PrivateRoute";
 import Route404 from "components/routers/Route404";
-import STORAGE_KEY from "constants/authForm";
+import {STORAGE_KEY} from "constants/authForm";
 import store from "./store";
 import {storeObject,getStoredObject} from "utils/storage.helpers";
 
