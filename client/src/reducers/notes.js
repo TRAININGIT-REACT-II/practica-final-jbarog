@@ -11,6 +11,12 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   switch(action.type) {
+    case actionTypes.SET_NOTES:
+      return {
+        list: [
+          ...action.notesList
+        ]
+      };
     case actionTypes.CREATE_NOTE:
       return {
         list: [

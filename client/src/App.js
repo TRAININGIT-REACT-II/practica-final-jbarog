@@ -11,13 +11,24 @@ import Login from "components/Pages/Auth/Login";
 import ListNotes from "components/Pages/Notes/ListNotes";
 import PrivateRoute from "components/routers/PrivateRoute";
 import Route404 from "components/routers/Route404";
+import STORAGE_KEY from "constants/authForm";
 import store from "./store";
+import {storeObject,getStoredObject} from "utils/storage.helpers";
+
 
 const App = () => {
+  const currentUserStored = getStoredObject(STORAGE_KEY) || false;
   const [status, setStatus] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [currentUser, setCurrentUser] = useState(false);
-
+  const [currentUser, setCurrentUser] = useState(currentUserStored);
+  const updateAuth = data => {
+    setCurrentUser(data);
+    if(data) {
+      storeObject(STORAGE_KEY, data);
+    } else {
+      localStorage.removeItem(STORAGE_KEY)
+    }
+  }
   // Cargamos el estado del servidor
   useEffect(() => {
     fetch("/api")
@@ -31,7 +42,7 @@ const App = () => {
     <>
       <CssBaseline />
       <Provider store={store}>
-        <Auth.Provider value={{ currentUser, updateAuth: setCurrentUser }}>
+        <Auth.Provider value={{ currentUser, updateAuth }}>
           <Router>
             <Switch>
               <Route exact path="/">

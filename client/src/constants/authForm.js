@@ -1,7 +1,8 @@
 import {objectMap} from "utils/object.helpers";
 
+export const STORAGE_KEY = 'currentUser'
 export const AUTH_FORM_CONF = {
-  name: {
+  username: {
     default:"",
     min:2,
     max:10,

@@ -36,10 +36,10 @@ const AuthForm = ({ onSubmit, isLoading }) => {
       AUTH_FORM_CONF[field].min,
       AUTH_FORM_CONF[field].max
     );
-    const nameError = checkFieldError('name');
+    const userNameError = checkFieldError('username');
     const passwordError = checkFieldError('password');
-    return nameError || passwordError?{
-      nameError,
+    return userNameError || passwordError?{
+      userNameError,
       passwordError,
     }:null
   }
@@ -69,12 +69,12 @@ const AuthForm = ({ onSubmit, isLoading }) => {
       margin="normal"
       required
       fullWidth
-      id="name"
-      label="name"
-      name="email"
-      autoComplete="name"
-      value={formState.name}
-      onChange={updateForm('name')}
+      id="username"
+      label="User name"
+      name="username"
+      autoComplete="username"
+      value={formState.userName}
+      onChange={updateForm('username')}
       autoFocus
       />
       {(formErrors && formErrors.nameError)?<Box>Name not valid</Box>:<></>}

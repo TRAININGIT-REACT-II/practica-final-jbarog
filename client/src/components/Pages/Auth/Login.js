@@ -1,42 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { NavLink } from "react-router-dom";
 
 import AuthLayout from "components/Layouts/AuthLayout";
-import { NavLink } from "react-router-dom";
+import useApi from "hooks/useApi";
 
 const Login = () => {
   const [info, setInfo] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const loginRequest = useApi('login',{})
   const doLogin = formData=>{
-    setIsLoading(true);
-    fetch("/api/login",{
-      method:"post",
-      body:JSON.stringify(formData),
-      headers:{
-        "Content-type": "application/json; charset=UTF-8",
-      }
-    })
-      .then((res) => res.json())
-      .then((authData) => {
-        setIsLoading(false);
-        if(authData.error){
-          createError(authData.error);
-        } else {
-          //auth.updateAuth(authData);
-        }
-      })
-      .catch(err => {
-        createError(err);
-        console.error(err)
-      });
+    loginRequest.perform(formData)
   }
+  useEffect(() => {
+    createError(loginRequest.error)
+    return createError
+  },[loginRequest.error]);
   const createError = message =>{
-    setInfo({
+    setInfo(message?{
       message,
       type:'error'
-    });
+    }:false);
   }
   return (
-    <AuthLayout title="Login" onSubmit={doLogin} isLoading={isLoading} info={info} setInfo={setInfo}>
+    <AuthLayout title="Login" onSubmit={doLogin} isLoading={loginRequest.loading} info={info} setInfo={setInfo}>
       <NavLink to="/join">You need an account?</NavLink>
     </AuthLayout>
   );

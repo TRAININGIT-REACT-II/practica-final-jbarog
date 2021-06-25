@@ -1,42 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { NavLink } from "react-router-dom";
 
 import AuthLayout from "components/Layouts/AuthLayout";
-import { NavLink } from "react-router-dom";
+import useApi from "hooks/useApi";
 
 const Join = ({ status }) => {
   const [info, setInfo] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const joinRequest = useApi('register',{})
   const doRegister = formData=>{
-    setIsLoading(true);
-    fetch("/api/register",{
-      method:"post",
-      body:JSON.stringify(formData),
-      headers:{
-        "Content-type": "application/json; charset=UTF-8",
-      }
-    })
-      .then((res) => res.json())
-      .then((authData) => {
-        setIsLoading(false);
-        if(authData.error) {
-          createError(authData.error);
-        }
-        console.log('authData',authData);
-        //auth.updateAuth(authData);
-      })
-      .catch(err => {
-        createError(err);
-        console.error(err)
-      });
+    joinRequest.perform(formData)
   }
+  useEffect(() => {
+    createError(joinRequest.error)
+    return createError
+  },[joinRequest.error]);
   const createError = message =>{
-    setInfo({
+    setInfo(message?{
       message,
       type:'error'
-    });
+    }:false);
   }
   return (
-    <AuthLayout title="Join" onSubmit={doRegister} isLoading={isLoading} info={info} setInfo={setInfo}>
+    <AuthLayout title="Join" onSubmit={doRegister} isLoading={joinRequest.loading} info={info} setInfo={setInfo}>
       <NavLink to="/login">You already have an account?</NavLink>
     </AuthLayout>
   );
