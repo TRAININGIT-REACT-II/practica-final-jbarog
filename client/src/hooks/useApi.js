@@ -57,7 +57,7 @@ const useApi = (action, initialParams = {},body = {}) => {
     }
 
     return {
-      url:endPoint.url,
+      url:API_DOMAIN+endPoint.url,
       fetchOptions
     };
   }, [initialParams,body]);
