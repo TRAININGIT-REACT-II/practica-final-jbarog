@@ -1,12 +1,16 @@
 import { useMemo, useEffect, useState, useContext } from "react";
 
 import Auth from "contexts/auth";
+import {templateReplace} from "utils/string.helpers";
 
 const API_ENDPOINTS = {
   login: { url: '/api/login',conf:{method:"post"},public:true,captureToken:true},
   register: { url: '/api/register',conf:{method:"post"},public:true,captureToken:true},
   getNotes: { url: '/api/notes'},
   addNote: { url: '/api/notes',conf:{method:"post"}},
+  getNote: { url: '/api/notes/${noteId}',parseUrl:true},
+  editNote: { url: '/api/notes/${noteId}',conf:{method:"put"},parseUrl:true},
+  deleteNote: { url: '/api/notes/${noteId}',conf:{method:"delete"},parseUrl:true},
 }
 const useApi = (action, initialParams = {},body = {}) => {
   const [loading, setLoading] = useState(false);
@@ -15,12 +19,22 @@ const useApi = (action, initialParams = {},body = {}) => {
   const [error, setError] = useState(null);
   const [performRequest, setPerformRequest] = useState(false);
   const [requestBody, setRequestBody] = useState(body);
+
   const perform = (body) => {
     if(body)setRequestBody(body)
     setPerformRequest(true);
   };
 
   const getEndPonit = action => API_ENDPOINTS[action] || null;
+
+  const parseUrl = (endPoint,body) => {
+    let url = endPoint.url;
+    if(endPoint.parseUrl && body){
+      url = templateReplace(url,body);
+    }
+    return API_DOMAIN+url
+  };
+
   const parseBody = (body,method) => {
     const methodName = (method && method.toUpperCase()) || 'GET'
       switch(methodName) {
@@ -30,6 +44,7 @@ const useApi = (action, initialParams = {},body = {}) => {
         return {body:JSON.stringify(body)}
     }
   };
+
   const config = useMemo(() => {
     const defaultConf = {
       headers:{
@@ -57,10 +72,11 @@ const useApi = (action, initialParams = {},body = {}) => {
     }
 
     return {
-      url:API_DOMAIN+endPoint.url,
+      url:parseUrl(endPoint,requestBody),
       fetchOptions
     };
   }, [initialParams,body]);
+
   const parseData = data=>{
     const endPoint = getEndPonit(action);
     setData(data);
@@ -68,6 +84,7 @@ const useApi = (action, initialParams = {},body = {}) => {
       auth.updateAuth(data)
     }
   }
+
   useEffect(() => {
     if (performRequest) {
       if (!loading) {

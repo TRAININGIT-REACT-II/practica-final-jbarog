@@ -23,7 +23,7 @@ const AuthForm = ({ onSubmit, isLoading }) => {
   const classes = useStyles();
   const [passwordMode, setPasswordMode] = useState(PASSWORD_MODES.password);
   const [formState, setFormState] = useState(DEFAULT_AUTH_FORM_STATE);
-  const [formErrors, setFormErrors] = useState(null);
+  const [formErrors, setFormErrors] = useState({});
 
   const togglePasswordMode = () => {
     const nextMode = passwordMode === PASSWORD_MODES.text?PASSWORD_MODES.password:PASSWORD_MODES.text;
@@ -46,10 +46,12 @@ const AuthForm = ({ onSubmit, isLoading }) => {
 
   const updateForm = field=>{
     return (event)=>{
-      setFormState({
+      const newState = {
         ...formState,
         [field]: event.target.value
-      });
+      }
+      setFormState(newState);
+      setFormErrors(checkFormErrors(newState));
     }
   };
 
@@ -57,10 +59,6 @@ const AuthForm = ({ onSubmit, isLoading }) => {
     event.preventDefault();
     onSubmit(formState);
   };
-
-  useEffect(() => {
-    setFormErrors(checkFormErrors(formState));
-  }, [formState]);
 
   return (
     <form className={classes.form}>
@@ -75,9 +73,10 @@ const AuthForm = ({ onSubmit, isLoading }) => {
       autoComplete="username"
       value={formState.userName}
       onChange={updateForm('username')}
+      error={Boolean(formErrors && formErrors.userNameError)}
+      helperText={(formErrors && formErrors.userNameError)?'Name not valid':''}
       autoFocus
       />
-      {(formErrors && formErrors.nameError)?<Box>Name not valid</Box>:<></>}
       <TextField
       variant="outlined"
       margin="normal"
@@ -90,8 +89,9 @@ const AuthForm = ({ onSubmit, isLoading }) => {
       autoComplete="current-password"
       value={formState.password}
       onChange={updateForm('password')}
+      error={Boolean(formErrors && formErrors.passwordError)}
+      helperText={(formErrors && formErrors.passwordError)?'Password not valid':''}
       />
-      {(formErrors && formErrors.passwordError)?<Box>Password not valid</Box>:<></>}
       <FormControlLabel
       control={<Checkbox value="remember" color="primary"  onChange={togglePasswordMode}/>}
       label="Show password"
