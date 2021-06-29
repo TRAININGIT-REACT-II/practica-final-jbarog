@@ -5,8 +5,8 @@ import { Provider } from "react-redux";
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
 
+import ErrorBoundary from "./components/ui/ErrorBoundary";
 import Auth from "contexts/auth";
-import Status from "components/Status";
 import Join from "components/Pages/Auth/Join";
 import Login from "components/Pages/Auth/Login";
 import ListNotes from "components/Pages/Notes/ListNotes";
@@ -46,37 +46,46 @@ const App = () => {
     [darkMode],
   );
 
+  const onReset = () => {
+    setDarkMode(false);
+    setLoading(false);
+    setCurrentUser(false);
+    localStorage.removeItem(STORAGE_KEY)
+  };
+
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Provider store={store}>
-        <Auth.Provider value={{ currentUser, updateAuth }}>
-          <Router>
-            <Switch>
-              <Route exact path="/">
-                <Redirect
-                  to={{
-                    pathname: "/notes",
-                  }}
-                />
-              </Route>
-              <Route path="/join">
-                <Join/>
-              </Route>
-              <Route path="/login">
-                <Login/>
-              </Route>
-              <PrivateRoute path="/notes">
-                <ListNotes onChangeDarkMode={onChangeDarkMode}/>
-              </PrivateRoute>
-              <Route404>
-                Not Found
-              </Route404>
-            </Switch>
-          </Router>
-        </Auth.Provider>
-      </Provider>
-    </ThemeProvider>
+    <ErrorBoundary message="An error ocurred" onReset={onReset}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Provider store={store}>
+          <Auth.Provider value={{ currentUser, updateAuth }}>
+            <Router>
+              <Switch>
+                <Route exact path="/">
+                  <Redirect
+                    to={{
+                      pathname: "/notes",
+                    }}
+                  />
+                </Route>
+                <Route path="/join">
+                  <Join/>
+                </Route>
+                <Route path="/login">
+                  <Login/>
+                </Route>
+                <PrivateRoute path="/notes">
+                  <ListNotes onChangeDarkMode={onChangeDarkMode}/>
+                </PrivateRoute>
+                <Route404>
+                  Not Found
+                </Route404>
+              </Switch>
+            </Router>
+          </Auth.Provider>
+        </Provider>
+      </ThemeProvider>
+    </ErrorBoundary>
   );
 };
 
