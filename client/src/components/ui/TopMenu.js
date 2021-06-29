@@ -53,10 +53,12 @@ const TopMenu = ({title, clickAdd:clickAddCallBack, onChangeDarkMode}) => {
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
-          <SwitchComponent
-            onChange={onChangeDarkMode}
-            color="primary"
-          />
+          {
+            onChangeDarkMode?<SwitchComponent
+              onChange={onChangeDarkMode}
+              color="primary"
+            />:<></>
+          }
           <Typography variant="h6" className={classes.title}>
             {title}
           </Typography>
