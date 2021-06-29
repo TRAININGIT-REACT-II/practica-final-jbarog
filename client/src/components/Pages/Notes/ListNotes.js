@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Route, NavLink, useHistory } from "react-router-dom";
 import { useRouteMatch } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
@@ -14,6 +14,7 @@ import { setNotes } from "actions/notes";
 import useApi from "hooks/useApi";
 import NoteDetail from "components/ui/NoteDetail";
 import NoteEdit from "components/ui/NoteEdit";
+import DeleteConfirm from "components/ui/DeleteConfirm";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -46,6 +47,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ListNotes = ({ status }) => {
+  const [showConfirm, setShowConfirm] = useState(false);
   const history = useHistory();
   const notes = useSelector((state) => getNotes(state));
   const classes = useStyles();
@@ -61,8 +63,12 @@ const ListNotes = ({ status }) => {
     dispatch(setNotes(listRequest.data || []));
   },[listRequest.data]);
 
-  const deleteNote = ()=>{
-    alert('TODO')
+  const showDeleteConfirm = (id)=>()=>{
+    setShowConfirm(id);
+  }
+
+  const hideDeleteConfirm = ()=>{
+    setShowConfirm(false);
   }
 
   const headerAction = ()=>{
@@ -93,7 +99,7 @@ const ListNotes = ({ status }) => {
                         <IconButton component={NavLink} to={`${match.url}/edit/${card.id}`}>
                           <EditIcon />
                         </IconButton>
-                        <IconButton onClick={deleteNote}>
+                        <IconButton onClick={showDeleteConfirm(card.id)}>
                           <DeleteIcon />
                         </IconButton>
                       </CardActions>
@@ -114,6 +120,7 @@ const ListNotes = ({ status }) => {
       <Route path={`${match.url}/create`}>
         <NoteEdit/>
       </Route>
+      <DeleteConfirm noteId={showConfirm} onClose={hideDeleteConfirm}/>
     </LoggedLayout>
   );
 };

@@ -32,7 +32,9 @@ const reducer = (state = initialState, action) => {
         list: updateArrayIndex(state.list,noteIndex,updateFn)
       }
     case actionTypes.REMOVE_NOTE:
-      return state.list.filter(n=>n.id!=action.id)
+      return {
+        list: state.list.filter(n=>n.id!=action.id)
+      }
     default:
       return state;
   }

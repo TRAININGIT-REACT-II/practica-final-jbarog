@@ -15,7 +15,7 @@ export const updateNote = (note) => ({
   note
 });
 
-export const removeNote = (index) => ({
+export const removeNote = (id) => ({
   type: actionTypes.REMOVE_NOTE,
-  index
+  id
 });
