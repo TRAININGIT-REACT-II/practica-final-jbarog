@@ -20,7 +20,6 @@ import {storeObject,getStoredObject} from "utils/storage.helpers";
 const App = () => {
   const currentUserStored = getStoredObject(STORAGE_KEY) || false;
   const [darkMode, setDarkMode] = useState(false)
-  const [status, setStatus] = useState(false);
   const [loading, setLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState(currentUserStored);
   const updateAuth = data => {
