@@ -1,5 +1,8 @@
 const HtmlWebPackPlugin = require("html-webpack-plugin");
+const { DefinePlugin } = require("webpack");
 const { resolve } = require("path");
+
+const apiDomain = process.env.API_DOMAIN || "";
 
 /**
  * Configuración para compilar el cliente de la práctica final
@@ -17,6 +20,10 @@ module.exports = {
     // Si no se fuerza este comportamiento, al utilizar react-router y definir rutas,
     // webpack utilizara URLs relativas como /mi-ruta/main.js causando errores.
     publicPath: "/",
+  },
+  resolve: {
+    modules: [resolve(__dirname, './src'), 'node_modules'],
+    extensions: ['.js', '.jsx', '.json']
   },
   module: {
     // Definimos los distintos modulos de transpilacion disponibles
@@ -43,6 +50,9 @@ module.exports = {
       template: "./template/index.html",
       favicon: "./static/favicon.ico",
       filename: "index.html",
+    }),
+    new DefinePlugin({
+      API_DOMAIN: JSON.stringify(apiDomain),
     }),
   ],
   // Por ahora, incluimos siempre los source maps para que las herramientas
