@@ -7,6 +7,8 @@ import { Typography, IconButton, CircularProgress, Container, Grid, makeStyles }
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
 import FeaturedPlayListIcon from '@material-ui/icons/FeaturedPlayList';
 import ReorderIcon from '@material-ui/icons/Reorder';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import SortByAlphaIcon from '@material-ui/icons/SortByAlpha';
 
 import LoggedLayout from "components/Layouts/LoggedLayout";
 import { getNotes } from "selectors/notes";
@@ -23,18 +25,27 @@ const LIST_TYPES = {
   box: 'box'
 }
 
+const ORDER_TYPES = {
+  date: 'date',
+  title: 'title'
+}
+
 const useStyles = makeStyles((theme) => ({
   cardGrid: {
     paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(8),
   },
-  changeType: {
+  changeListType: {
     float: 'right',
+  },
+  changeOrderType: {
+    float: 'left',
   },
 }));
 
 const ListNotes = ({ status }) => {
   const [listType, setListType] = useState(LIST_TYPES.box);
+  const [orderType, setOrderType] = useState(ORDER_TYPES.date);
   const [showConfirm, setShowConfirm] = useState(false);
   const history = useHistory();
   const notes = useSelector((state) => getNotes(state));
@@ -63,8 +74,22 @@ const ListNotes = ({ status }) => {
     setListType(value);
   }
 
+  const changeOrderType = (e,value)=>{
+    setOrderType(value);
+  }
+
   const headerAction = ()=>{
     history.push("/notes/create");
+  }
+
+  const orderByDate = (a,b)=>{
+    return 1;
+  }
+
+  const orderByTitle = (x,y)=>{
+    if (x.title < y.title) return -1;
+    if (x.title > y.title) return 1;
+    return 0;
   }
 
   return (
@@ -75,7 +100,19 @@ const ListNotes = ({ status }) => {
             listRequest.loading?<CircularProgress />:
             <>
               <ToggleButtonGroup
-                className={classes.changeType}
+                className={classes.changeOrderType}
+                size="small"
+                color="primary"
+                value={orderType}
+                exclusive
+                onChange={changeOrderType}
+                disabled={!notes || !notes.length}
+              >
+                <ToggleButton value={ORDER_TYPES.date}><CalendarTodayIcon/></ToggleButton>
+                <ToggleButton value={ORDER_TYPES.title}><SortByAlphaIcon/></ToggleButton>
+              </ToggleButtonGroup>
+              <ToggleButtonGroup
+                className={classes.changeListType}
                 size="small"
                 color="primary"
                 value={listType}
@@ -87,7 +124,7 @@ const ListNotes = ({ status }) => {
                 <ToggleButton value={LIST_TYPES.list}><ReorderIcon/></ToggleButton>
               </ToggleButtonGroup>
               <Grid container spacing={4}>
-                  {notes.map((card,index) => (
+                  {[].concat(notes).sort(orderType==ORDER_TYPES.date?orderByDate:orderByTitle).map((card,index) => (
                     listType===LIST_TYPES.box?
                     <NoteCard note={card} key={index} path={match.url} onDelete={showDeleteConfirm}/>:
                     <NoteRow note={card} key={index} path={match.url} onDelete={showDeleteConfirm}/>
