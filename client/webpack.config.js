@@ -7,7 +7,7 @@ const apiDomain = process.env.API_DOMAIN || "";
 /**
  * Configuración para compilar el cliente de la práctica final
  */
-module.exports = {
+const config = {
   // Para simplificar, asignamos el contexto a la carpeta actual
   context: resolve(__dirname),
   // Punto de entrada de la aplicación
@@ -74,4 +74,12 @@ module.exports = {
       "/api": "http://localhost:3000",
     },
   },
+};
+
+module.exports = (_env, argv) => {
+  if (argv.mode === "production") {
+    config.devtool = "source-map";
+  }
+
+  return config;
 };
