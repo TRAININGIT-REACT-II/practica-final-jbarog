@@ -3,6 +3,7 @@ import { useContext } from "react";
 
 import { AppBar, Toolbar, Typography, Menu, MenuItem, IconButton, Fab, makeStyles } from '@material-ui/core';
 import { AccountCircle } from '@material-ui/icons';
+import SwitchComponent from '@material-ui/core/Switch';
 import AddIcon from '@material-ui/icons/Add';
 
 import Auth from "contexts/auth";
@@ -27,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TopMenu = ({title, clickAdd:clickAddCallBack}) => {
+const TopMenu = ({title, clickAdd:clickAddCallBack, onChangeDarkMode}) => {
   const auth = useContext(Auth);
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -52,6 +53,10 @@ const TopMenu = ({title, clickAdd:clickAddCallBack}) => {
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
+          <SwitchComponent
+            onChange={onChangeDarkMode}
+            color="primary"
+          />
           <Typography variant="h6" className={classes.title}>
             {title}
           </Typography>

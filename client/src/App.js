@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { BrowserRouter as Router, Route, NavLink, Switch } from "react-router-dom";
 import { Provider } from "react-redux";
 
 import CssBaseline from '@material-ui/core/CssBaseline';
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
 
 import Auth from "contexts/auth";
 import Status from "components/Status";
@@ -18,6 +19,7 @@ import {storeObject,getStoredObject} from "utils/storage.helpers";
 
 const App = () => {
   const currentUserStored = getStoredObject(STORAGE_KEY) || false;
+  const [darkMode, setDarkMode] = useState(false)
   const [status, setStatus] = useState(false);
   const [loading, setLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState(currentUserStored);
@@ -29,17 +31,23 @@ const App = () => {
       localStorage.removeItem(STORAGE_KEY)
     }
   }
-  // Cargamos el estado del servidor
-  useEffect(() => {
-    fetch("/api")
-      .then((res) => res.json())
-      .then((data) => setStatus(data.status === "ok"))
-      .finally(() => setLoading(false));
-  }, []);
 
-  // Mostramos la aplicación
+  const onChangeDarkMode = (e,v)=>{
+    setDarkMode(v)
+  }
+
+  const theme = useMemo(
+    () =>
+      createMuiTheme({
+        palette: {
+          type: darkMode ? 'dark' : 'light',
+        },
+      }),
+    [darkMode],
+  );
+
   return (
-    <>
+    <ThemeProvider theme={theme}>
       <CssBaseline />
       <Provider store={store}>
         <Auth.Provider value={{ currentUser, updateAuth }}>
@@ -61,18 +69,16 @@ const App = () => {
                 <Login/>
               </Route>
               <PrivateRoute path="/notes">
-                <ListNotes/>
+                <ListNotes onChangeDarkMode={onChangeDarkMode}/>
               </PrivateRoute>
               <Route404>
                 Not Found
               </Route404>
             </Switch>
-            <NavLink exact activeClassName="active" to="/notes">notes</NavLink>
-            <NavLink exact activeClassName="active" to="/">Home</NavLink>
           </Router>
         </Auth.Provider>
       </Provider>
-    </>
+    </ThemeProvider>
   );
 };
 

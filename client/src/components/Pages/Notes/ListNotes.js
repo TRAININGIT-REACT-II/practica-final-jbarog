@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ListNotes = ({ status }) => {
+const ListNotes = ({ onChangeDarkMode }) => {
   const [listType, setListType] = useState(LIST_TYPES.box);
   const [orderType, setOrderType] = useState(ORDER_TYPES.date);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -93,7 +93,7 @@ const ListNotes = ({ status }) => {
   }
 
   return (
-    <LoggedLayout title="Notes" clickAdd={headerAction}>
+    <LoggedLayout title="Notes" clickAdd={headerAction} onChangeDarkMode={onChangeDarkMode}>
       <Route path={`${match.url}`}>
         <Container className={classes.cardGrid} maxWidth="md">
           {

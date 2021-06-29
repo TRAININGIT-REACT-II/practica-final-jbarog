@@ -6,7 +6,6 @@ import Auth from "contexts/auth";
 const PrivateRoute = ({ children, ...others }) => {
   const { currentUser } = useContext(Auth);
 
-  console.log("....",currentUser);
   return (
     <Route
       {...others}
