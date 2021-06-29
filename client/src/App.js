@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import { BrowserRouter as Router, Route, NavLink, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, NavLink, Switch, Redirect } from "react-router-dom";
 import { Provider } from "react-redux";
 
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -54,13 +54,11 @@ const App = () => {
           <Router>
             <Switch>
               <Route exact path="/">
-                <main>
-                <h1>Curso de React de TrainingIT</h1>
-                <p>
-                Estado del servidor:
-                {loading ? " Cargando..." : <Status status={status} />}
-                </p>
-                </main>
+                <Redirect
+                  to={{
+                    pathname: "/notes",
+                  }}
+                />
               </Route>
               <Route path="/join">
                 <Join/>
