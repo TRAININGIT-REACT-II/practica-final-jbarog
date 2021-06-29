@@ -3,6 +3,8 @@ import { Route, useHistory } from "react-router-dom";
 import { useRouteMatch } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
 
+import { Box, Fab } from '@material-ui/core';
+import AddIcon from '@material-ui/icons/Add';
 import { Typography, IconButton, CircularProgress, Container, Grid, makeStyles } from '@material-ui/core';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
 import FeaturedPlayListIcon from '@material-ui/icons/FeaturedPlayList';
@@ -31,6 +33,11 @@ const ORDER_TYPES = {
 }
 
 const useStyles = makeStyles((theme) => ({
+  noItems: {
+    textAlign:'center',
+    width: '100%',
+    paddingTop: theme.spacing(9),
+  },
   cardGrid: {
     paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(8),
@@ -106,10 +113,13 @@ const ListNotes = ({ onChangeDarkMode }) => {
                 value={orderType}
                 exclusive
                 onChange={changeOrderType}
-                disabled={!notes || !notes.length}
               >
-                <ToggleButton value={ORDER_TYPES.date}><CalendarTodayIcon/></ToggleButton>
-                <ToggleButton value={ORDER_TYPES.title}><SortByAlphaIcon/></ToggleButton>
+                <ToggleButton value={ORDER_TYPES.date} disabled={!notes || !notes.length}>
+                  <CalendarTodayIcon/>
+                </ToggleButton>
+                <ToggleButton value={ORDER_TYPES.title} disabled={!notes || !notes.length}>
+                  <SortByAlphaIcon/>
+                </ToggleButton>
               </ToggleButtonGroup>
               <ToggleButtonGroup
                 className={classes.changeListType}
@@ -120,10 +130,21 @@ const ListNotes = ({ onChangeDarkMode }) => {
                 onChange={changeListType}
                 disabled={!notes || !notes.length}
               >
-                <ToggleButton value={LIST_TYPES.box}><FeaturedPlayListIcon/></ToggleButton>
-                <ToggleButton value={LIST_TYPES.list}><ReorderIcon/></ToggleButton>
+                <ToggleButton value={LIST_TYPES.box} disabled={!notes || !notes.length}>
+                  <FeaturedPlayListIcon/>
+                </ToggleButton>
+                <ToggleButton value={LIST_TYPES.list} disabled={!notes || !notes.length}>
+                  <ReorderIcon/>
+                </ToggleButton>
               </ToggleButtonGroup>
               <Grid container spacing={4}>
+                  {!notes || !notes.length?
+                    <Box className={classes.noItems}>
+                      <Typography>Add your first note clicking on</Typography>
+                      <Fab size="small" color="secondary" aria-label="add" onClick={headerAction}>
+                        <AddIcon htmlColor="#fff" />
+                      </Fab>
+                    </Box>:<></>}
                   {[].concat(notes).sort(orderType==ORDER_TYPES.date?orderByDate:orderByTitle).map((card,index) => (
                     listType===LIST_TYPES.box?
                     <NoteCard note={card} key={index} path={match.url} onDelete={showDeleteConfirm}/>:
